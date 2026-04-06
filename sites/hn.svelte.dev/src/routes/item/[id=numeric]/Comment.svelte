@@ -1,39 +1,35 @@
 <script>
-	import Comment from './Comment.svelte';
+	import SubsetHTML from '$lib/SubsetHTML.svelte';
+	import CommentElement from './Comment.svelte';
+	import { resolve } from '$app/paths';
+	import { timeAgo } from '$lib/utils';
 
-	/**
-	 * @typedef {object} CommentData
-	 * @property {boolean} [deleted]
-	 * @property {string} user
-	 * @property {number} time_ago
-	 * @property {string} content
-	 * @property {CommentData[]} comments
-	 */
-
-	/** @type {{ comment: CommentData }} */
+	/** @type {{ comment: AlgoliaComment }} */
 	const { comment } = $props();
 </script>
 
-{#if !comment.deleted}
+{#if typeof comment !== null}
 	<article class="comment">
 		<details open>
 			<summary>
 				<div class="meta-bar" role="button" tabindex="0">
 					<span class="meta">
-						<a href="/user/{comment.user}">{comment.user}</a>
-						{comment.time_ago}
+						<a href={resolve('/user/[name]', { name: comment.author })}>{comment.author}</a>
+						{timeAgo(comment.created_at_i)}
 					</span>
 				</div>
 			</summary>
 
 			<div class="body">
-				{@html comment.content}
+				<SubsetHTML content={comment.text} />
 			</div>
 
-			{#if comment.comments.length > 0}
+			{#if comment.children && comment.children.length > 0}
 				<ul class="children">
-					{#each comment.comments as child}
-						<li><Comment comment={child} /></li>
+					{#each comment.children as child (child.id)}
+						<li>
+							<CommentElement comment={child} />
+						</li>
 					{/each}
 				</ul>
 			{/if}
