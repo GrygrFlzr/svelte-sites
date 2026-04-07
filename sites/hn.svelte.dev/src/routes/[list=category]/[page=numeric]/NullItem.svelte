@@ -1,8 +1,5 @@
-<script>
-	/**
-	 * @type {{ id: number; index: number; }}
-	 */
-	const { id, index } = $props();
+<script lang="ts">
+	const { id, index }: { id: number; index: number } = $props();
 </script>
 
 <article>

@@ -1,12 +1,12 @@
-<script>
+<script lang="ts">
+	import type { PageProps } from './$types';
 	import { resolve } from '$app/paths';
 	import SubsetHTML from '$lib/SubsetHTML.svelte';
 	import { timeAgo } from '$lib/utils';
 	import CommentElement from './Comment.svelte';
 
-	/** @type {import('./$types').PageProps} */
-	const { data } = $props();
-	const { algoliaItem, pollOptions } = $derived(data);
+	const { data }: PageProps = $props();
+	const { algoliaItem, pollOptions, now } = $derived(data);
 </script>
 
 <svelte:head>
@@ -24,7 +24,7 @@
 			{algoliaItem.points}
 			{algoliaItem.points === 1 ? 'point' : 'points'} by
 			<a href={resolve('/user/[name]', { name: algoliaItem.author })}>{algoliaItem.author}</a>
-			{algoliaItem.created_at_i ? timeAgo(algoliaItem.created_at_i) : 'Some time ago'}
+			{timeAgo(now - algoliaItem.created_at_i)}
 		</p>
 
 		{#if algoliaItem.text}
@@ -42,7 +42,7 @@
 	{#if algoliaItem.children && algoliaItem.children.length > 0}
 		<div class="comments">
 			{#each algoliaItem.children as comment (comment.id)}
-				<CommentElement {comment} />
+				<CommentElement {comment} {now} />
 			{/each}
 		</div>
 	{/if}

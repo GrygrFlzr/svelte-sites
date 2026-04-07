@@ -1,14 +1,9 @@
-<script>
+<script lang="ts">
 	import { resolve } from '$app/paths';
 	import { timeAgo } from '$lib/utils';
-	/**
-	 * @type {{
-	 *   item: HNStory | HNJob | HNPoll;
-	 *   index: number;
-	 * }}
-	 */
-	const { item, index } = $props();
-	const relativeTimeAgo = $derived(item.time ? timeAgo(item.time) : 'some time ago');
+
+	type Props = { item: HNStory | HNJob | HNPoll; index: number; now: number };
+	const { item, index, now }: Props = $props();
 </script>
 
 <article>
@@ -31,7 +26,7 @@
 		{item.score}
 		{item.score === 1 ? 'point' : 'points'} by
 		<a href={resolve('/user/[name]', { name: item.by })}>{item.by}</a>
-		{relativeTimeAgo}
+		{timeAgo(now - item.time)}
 		{#if item.type !== 'job'}
 			|
 			<a
