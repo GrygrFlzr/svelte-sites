@@ -8,7 +8,7 @@
 </script>
 
 {#if typeof comment !== null}
-	<article class="comment">
+	<article id={`${comment.id}`} class="comment">
 		<details open>
 			<summary>
 				<div class="meta-bar" role="button" tabindex="0">
