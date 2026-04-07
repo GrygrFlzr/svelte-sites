@@ -1,8 +1,9 @@
-/**
- * @param {string} list
- * @param {(HNStory | HNJob | HNPoll | { type: 'null', id: number })[]} items
- */
-const render = (list, items) => `<?xml version="1.0" encoding="UTF-8" ?>
+import type { RequestHandler } from './$types';
+
+const render = (
+	list: string,
+	items: (HNStory | HNJob | HNPoll | { type: 'null'; id: number })[]
+) => `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
 	<title>Svelte HN (${list})</title>
@@ -35,17 +36,12 @@ const render = (list, items) => `<?xml version="1.0" encoding="UTF-8" ?>
 const BASE = 'https://hacker-news.firebaseio.com/v0/';
 const ITEMS_PER_PAGE = 30;
 
-/** @satisfies {import('./$types').RequestHandler} */
-export async function GET({ params, fetch }) {
+export const GET = (async ({ params, fetch }) => {
 	const list = params.list === 'jobs' ? 'job' : params.list;
-	/**
-	 * 500 top/new/best, or 200 ask/show/job
-	 * @type {number[]}
-	 **/
-	const itemIds = await fetch(`${BASE}${list}stories.json`).then((r) => r.json());
+
+	const itemIds: number[] = await fetch(`${BASE}${list}stories.json`).then((r) => r.json());
 	const relevantItemIds = itemIds.slice(0, ITEMS_PER_PAGE);
-	/** @type {(HNStory | HNJob | HNPoll | { type: 'null', id: number })[]} */
-	const items = await Promise.all(
+	const items: (HNStory | HNJob | HNPoll | { type: 'null'; id: number })[] = await Promise.all(
 		relevantItemIds.map((id) =>
 			fetch(`${BASE}item/${id}.json`).then((res) => res.json() ?? { type: 'null', id })
 		)
@@ -59,4 +55,4 @@ export async function GET({ params, fetch }) {
 			'Content-Type': 'application/rss+xml'
 		}
 	});
-}
+}) satisfies RequestHandler;

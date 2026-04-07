@@ -1,13 +1,8 @@
-<script>
+<script lang="ts">
 	import { resolve } from '$app/paths';
 	import { timeAgo } from '$lib/utils';
-	/**
-	 * @type {{
-	 *   item: HNStory | HNJob | HNPoll;
-	 *   index: number;
-	 * }}
-	 */
-	const { item, index } = $props();
+
+	const { item, index }: { item: HNStory | HNJob | HNPoll; index: number } = $props();
 	const relativeTimeAgo = $derived(item.time ? timeAgo(item.time) : 'some time ago');
 </script>
 

@@ -1,12 +1,12 @@
-<script>
-	import { parse } from './htmlSubsetParse';
-	/** @type {{ content: string }} */
-	const { content } = $props();
+<script lang="ts">
+	import { parse, type Inline } from './htmlSubsetParse';
+
+	const { content }: { content: string } = $props();
 
 	const parsedContent = $derived(parse(content));
 </script>
 
-{#snippet inline(/** @type {import("./htmlSubsetParse").Inline} */ child)}
+{#snippet inline(child: Inline)}
 	{#if child.type === 'text'}
 		{child.text}
 	{:else if child.type === 'link'}

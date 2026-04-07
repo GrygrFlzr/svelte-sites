@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
+	import type { PageProps } from './$types';
 	import SubsetHTML from '$lib/SubsetHTML.svelte';
 	import { timeAgo } from '$lib/utils';
 
-	/** @type {import('./$types').PageProps} */
-	const { data } = $props();
+	const { data }: PageProps = $props();
 </script>
 
 <svelte:head>

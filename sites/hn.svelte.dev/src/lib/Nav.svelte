@@ -1,11 +1,9 @@
-<script>
+<script lang="ts">
 	import { resolve } from '$app/paths';
 
-	/** @type {{ section: string }} section */
-	const { section } = $props();
+	const { section }: { section: string } = $props();
 
-	/** @type {('top' | 'new' | 'best' | 'show' | 'ask' | 'jobs')[]} */
-	const lists = ['top', 'new', 'best', 'show', 'ask', 'jobs'];
+	const lists = ['top', 'new', 'best', 'show', 'ask', 'jobs'] as const;
 </script>
 
 <nav>

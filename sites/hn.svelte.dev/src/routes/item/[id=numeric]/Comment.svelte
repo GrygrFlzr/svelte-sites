@@ -1,11 +1,10 @@
-<script>
+<script lang="ts">
 	import SubsetHTML from '$lib/SubsetHTML.svelte';
 	import CommentElement from './Comment.svelte';
 	import { resolve } from '$app/paths';
 	import { timeAgo } from '$lib/utils';
 
-	/** @type {{ comment: AlgoliaComment }} */
-	const { comment } = $props();
+	const { comment }: { comment: AlgoliaComment } = $props();
 </script>
 
 {#if typeof comment !== null}

@@ -1,6 +1,7 @@
 import { dev } from '$app/environment';
 import { redirect } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 
-export function load() {
+export const load = (() => {
 	throw redirect(dev ? 302 : 301, '/top/1');
-}
+}) satisfies PageLoad;

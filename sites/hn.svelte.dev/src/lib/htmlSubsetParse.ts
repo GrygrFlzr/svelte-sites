@@ -1,24 +1,17 @@
-/**
- * Types used by the parser
- *
- * @typedef {{ type: "text", text: string }
- *         | { type: "link", href: string, text: string }
- *         | { type: "italic", children: Inline[] }} Inline
- *
- * @typedef {{ type: "paragraph", children: Inline[] }
- *         | { type: "code", text: string }} Block
- *
- * @typedef {{ marker: string, index: number }} ScanHit
- *
- * @typedef {{ node: Inline, rest: string }} InlineResult
- *
- * @typedef {{ node: Block, rest: string }} BlockResult
- */
+/// Types used by the parser
+
+export type Inline =
+	| { type: 'text'; text: string }
+	| { type: 'link'; href: string; text: string }
+	| { type: 'italic'; children: Inline[] };
+type Block = { type: 'paragraph'; children: Inline[] } | { type: 'code'; text: string };
+type ScanHit = { marker: string; index: number };
+type InlineResult = { node: Inline; rest: string };
+type BlockResult = { node: Block; rest: string };
 
 /// HTML Entities (most of them anyway)
 
-/** @param {string} s */
-function decodeEntities(s) {
+function decodeEntities(s: string) {
 	return s
 		.replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
 		.replace(/&#(\d+);/g, (_, d) => String.fromCharCode(Number(d)))
@@ -31,15 +24,8 @@ function decodeEntities(s) {
 
 /// Scanner
 
-/**
- * Find the earliest occurrence of any of the given markers.
- * @param {string} text
- * @param {string[]} markers
- * @returns {ScanHit | null}
- */
-function scan(text, markers) {
-	/** @type {ScanHit | null} */
-	let best = null;
+function scan(text: string, markers: string[]): ScanHit | null {
+	let best: ScanHit | null = null;
 	for (const marker of markers) {
 		const i = text.indexOf(marker);
 		if (i !== -1 && (best === null || i < best.index)) {
@@ -53,13 +39,8 @@ function scan(text, markers) {
 /// plain text, <a>, <i>
 /// <i> elements can contain plain text and <a>
 
-/**
- * @param {string} html
- * @returns {Inline[]}
- */
-function parseInlines(html) {
-	/** @type {Inline[]} */
-	const nodes = [];
+function parseInlines(html: string): Inline[] {
+	const nodes: Inline[] = [];
 	let rest = html;
 
 	while (rest) {
@@ -86,12 +67,7 @@ function parseInlines(html) {
 	return nodes;
 }
 
-/**
- * @param {string} text
- * @param {number} openIdx
- * @returns {InlineResult}
- */
-function consumeLink(text, openIdx) {
+function consumeLink(text: string, openIdx: number): InlineResult {
 	const closeIdx = text.indexOf('</a>', openIdx);
 	if (closeIdx === -1) {
 		return { node: { type: 'text', text: decodeEntities(text.slice(openIdx)) }, rest: '' };
@@ -111,12 +87,7 @@ function consumeLink(text, openIdx) {
 	};
 }
 
-/**
- * @param {string} text
- * @param {number} openIdx
- * @returns {InlineResult}
- */
-function consumeItalic(text, openIdx) {
+function consumeItalic(text: string, openIdx: number): InlineResult {
 	const closeIdx = text.indexOf('</i>', openIdx);
 	if (closeIdx === -1) {
 		return { node: { type: 'text', text: decodeEntities(text.slice(openIdx + 3)) }, rest: '' };
@@ -128,11 +99,7 @@ function consumeItalic(text, openIdx) {
 	};
 }
 
-/**
- * @param {Inline[]} nodes
- * @param {string} raw
- */
-function addText(nodes, raw) {
+function addText(nodes: Inline[], raw: string): void {
 	const text = decodeEntities(raw);
 	if (text) nodes.push({ type: 'text', text });
 }
@@ -142,12 +109,9 @@ function addText(nodes, raw) {
 
 /**
  * Parse HN comment HTML into structured blocks.
- * @param {string} html
- * @returns {Block[]}
  */
-export function parse(html) {
-	/** @type {Block[]} */
-	const blocks = [];
+export function parse(html: string): Block[] {
+	const blocks: Block[] = [];
 	let rest = html;
 
 	while (rest) {
@@ -172,12 +136,7 @@ export function parse(html) {
 	return blocks;
 }
 
-/**
- * @param {string} text
- * @param {number} openIdx
- * @returns {BlockResult}
- */
-function consumeCode(text, openIdx) {
+function consumeCode(text: string, openIdx: number): BlockResult {
 	const closeIdx = text.indexOf('</code></pre>', openIdx);
 	if (closeIdx === -1) {
 		return { node: { type: 'code', text: decodeEntities(text.slice(openIdx + 11)) }, rest: '' };
@@ -189,11 +148,7 @@ function consumeCode(text, openIdx) {
 	};
 }
 
-/**
- * @param {Block[]} blocks
- * @param {string} raw
- */
-function pushParagraph(blocks, raw) {
+function pushParagraph(blocks: Block[], raw: string): void {
 	const children = parseInlines(raw);
 	if (children.length) blocks.push({ type: 'paragraph', children });
 }

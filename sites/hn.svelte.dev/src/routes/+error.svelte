@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/state';
 
 	const offline = typeof navigator !== 'undefined' && navigator.onLine === false;

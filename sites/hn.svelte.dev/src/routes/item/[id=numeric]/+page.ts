@@ -1,11 +1,7 @@
-/**
- * @satisfies {import('./$types').PageLoad}
- */
-export async function load({ params, fetch }) {
-	/**
-	 * @type {[HNItem | null, AlgoliaItem]}
-	 */
-	const [hnItem, algoliaItem] = await Promise.all([
+import type { PageLoad } from './$types';
+
+export const load = (async ({ params, fetch }) => {
+	const [hnItem, algoliaItem]: [HNItem | null, AlgoliaItem] = await Promise.all([
 		fetch(`https://hacker-news.firebaseio.com/v0/item/${params.id}.json`).then((r) => r.json()),
 		fetch(`https://hn.algolia.com/api/v1/items/${params.id}`).then((r) => r.json())
 	]);
@@ -25,10 +21,7 @@ export async function load({ params, fetch }) {
 		}
 	}
 
-	/**
-	 * @type {HNPollOption[]}
-	 */
-	let pollOptions = [];
+	let pollOptions: HNPollOption[] = [];
 	if (algoliaItem && algoliaItem.type === 'poll') {
 		pollOptions = await Promise.all(
 			algoliaItem.options.map((id) =>
@@ -38,4 +31,4 @@ export async function load({ params, fetch }) {
 	}
 
 	return { algoliaItem, pollOptions };
-}
+}) satisfies PageLoad;

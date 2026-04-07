@@ -1,4 +1,4 @@
-export const timeAgo = (/** @type {number}*/ timestampSeconds) => {
+export const timeAgo = (timestampSeconds: number) => {
 	const seconds = Math.floor(Date.now() / 1000) - timestampSeconds;
 	const minutes = seconds / 60;
 	const hours = minutes / 60;

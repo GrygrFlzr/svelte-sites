@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
+	import type { PageProps } from './$types';
 	import { resolve } from '$app/paths';
 	import ItemSummary from './ItemSummary.svelte';
 	import NullItem from './NullItem.svelte';
 
-	/** @type {import('./$types').PageProps} */
-	const { data } = $props();
+	const { data }: PageProps = $props();
 
 	const PAGE_SIZE = 30;
 
@@ -29,7 +29,7 @@
 	<a
 		class="more"
 		href={resolve('/[list=category]/[page=numeric]', {
-			list: /** @type {"top" | "new" | "best" | "show" | "ask" | "jobs"} */ (data.list),
+			list: data.list as 'top' | 'new' | 'best' | 'show' | 'ask' | 'jobs',
 			page: `${data.page + 1}`
 		})}>More...</a
 	>
