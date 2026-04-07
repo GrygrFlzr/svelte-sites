@@ -9,8 +9,7 @@ const ORDERED_UNITS_AND_FACTOR = [
 	['second', 1]
 ] as const;
 
-export function timeAgo(timestampSeconds: number): string {
-	const deltaSeconds = Date.now() / 1000 - timestampSeconds;
+export function timeAgo(deltaSeconds: number): string {
 	for (const [unit, factor] of ORDERED_UNITS_AND_FACTOR) {
 		if (deltaSeconds >= factor) {
 			const truncValue = Math.trunc(deltaSeconds / factor);

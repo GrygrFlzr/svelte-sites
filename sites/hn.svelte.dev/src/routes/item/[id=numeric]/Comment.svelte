@@ -4,7 +4,8 @@
 	import { resolve } from '$app/paths';
 	import { timeAgo } from '$lib/utils';
 
-	const { comment }: { comment: AlgoliaComment } = $props();
+	type Props = { comment: AlgoliaComment; now: number };
+	const { comment, now }: Props = $props();
 </script>
 
 {#if typeof comment !== null}
@@ -14,7 +15,7 @@
 				<div class="meta-bar" role="button" tabindex="0">
 					<span class="meta">
 						<a href={resolve('/user/[name]', { name: comment.author })}>{comment.author}</a>
-						{timeAgo(comment.created_at_i)}
+						{timeAgo(now - comment.created_at_i)}
 					</span>
 				</div>
 			</summary>
@@ -27,7 +28,7 @@
 				<ul class="children">
 					{#each comment.children as child (child.id)}
 						<li>
-							<CommentElement comment={child} />
+							<CommentElement comment={child} {now} />
 						</li>
 					{/each}
 				</ul>

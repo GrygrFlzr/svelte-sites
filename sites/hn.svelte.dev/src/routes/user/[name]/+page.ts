@@ -6,5 +6,6 @@ export const load = (async ({ params, fetch }) => {
 		`https://hacker-news.firebaseio.com/v0/user/${params.name}.json`
 	).then((r) => r.json());
 
-	return user;
+	const now = Date.now();
+	return { user, now };
 }) satisfies PageLoad;

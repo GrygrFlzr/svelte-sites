@@ -22,5 +22,6 @@ export const load = (async ({ params, fetch }) => {
 		)
 	);
 
-	return { list, page, items };
+	const now = Date.now();
+	return { list, page, items, now };
 }) satisfies PageLoad;

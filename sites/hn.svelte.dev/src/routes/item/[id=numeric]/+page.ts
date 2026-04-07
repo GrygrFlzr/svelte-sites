@@ -30,5 +30,6 @@ export const load = (async ({ params, fetch }) => {
 		);
 	}
 
-	return { algoliaItem, pollOptions };
+	const now = Date.now();
+	return { algoliaItem, pollOptions, now };
 }) satisfies PageLoad;
