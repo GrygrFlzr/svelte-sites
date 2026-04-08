@@ -10,8 +10,9 @@ export const GET = (async ({ params, fetch }) => {
 		fetch(`${FIRESTORE_BASE}item/${params.id}.json`),
 		fetch(`https://hn.algolia.com/api/v1/items/${params.id}`)
 	]);
-	if (algoliaRes.status === 'rejected') error(500, 'Upstream failure');
-	if (!algoliaRes.value.ok) error(algoliaRes.value.status, algoliaRes.value.statusText);
+	if (algoliaRes.status === 'rejected') error(500, 'Network failure');
+	if (!algoliaRes.value.ok)
+		error(algoliaRes.value.status, `Upstream Responded with ${algoliaRes.value.statusText}`);
 
 	const algoliaItem: AlgoliaItem = await algoliaRes.value.json();
 	const hnItem: HNItem | null =

@@ -21,14 +21,12 @@ export const GET = (async ({ params, fetch }) => {
 		error(404, 'Page not found');
 	}
 
-	// allow partial failure in fetch
-	const allStoriesSettled = await Promise.allSettled(
-		relevantItemIds.map((id) => fetch(`${FIRESTORE_BASE}item/${id}.json`))
-	);
-	// resolve failed fetches as null
 	const items: ResponseType = await Promise.all(
-		allStoriesSettled.map((res) =>
-			res.status === 'fulfilled' && res.value.ok ? res.value.json() : null
+		relevantItemIds.map((id) =>
+			fetch(`${FIRESTORE_BASE}item/${id}.json`).then(
+				// allow partial failure in fetch
+				(res) => (res.ok ? res.json() : { type: 'null', id })
+			)
 		)
 	);
 
